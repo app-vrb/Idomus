@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html charset="UTF-8">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+		<title>Main Settings</title>
+		<!-- Latest compiled and minified CSS 
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	-->
+    <link rel="stylesheet" href="/automation-app-0.0.1.min.css">
+    </head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 col-lg-offset-1">
+					<h1>WiFi Settings</h1>
+					<form id="set-main-settings-id" name="set-main-settings" action="savewifi" method="POST" autocomplete="off">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="row">
+									
+								
+									<div class="col-sm-8 form-group">
+										<label for="ssid-id">SSID Name</label>
+										<input type="text" required class="form-control" name="ssid" id="ssid-id" value="">
+									</div>
+									
+									
+								</div>
+
+								
+								<div class="row">
+								
+									<div class="col-sm-6 form-group">
+										<label for="pwd-id">Password</label>
+										<input type="password" class="form-control" name="pwd" id="pwd-id" value="">
+									</div>
+								</div>
+                                <div class="row">
+									
+								
+									<div class="col-sm-8 form-group">
+										<label for="ssid1-id">SSID Name 1</label>
+										<input type="text" required class="form-control" name="ssid1" id="ssid1-id" value="">
+									</div>
+									
+									
+								</div>
+
+								
+								<div class="row">
+								
+									<div class="col-sm-6 form-group">
+										<label for="pwd1-id">Password 1</label>
+										<input type="password" class="form-control" name="pwd1" id="pwd1-id" value="">
+									</div>
+								</div>
+
+
+
+
+
+
+								
+							</div>
+						</div>
+						<div class="text-center">
+							<button type="submit" id="submit-button-id" class="btn btn-success btn-lg">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="text-center">
+			<br>
+			<a href="/">Home</a>
+			<br>
+			
+		</div>
+        <!-- 
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        -->
+		<script src="/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$.getJSON('/wifi.json', function(data){
+					$.each(data, function(key, value){
+						$('#'+key+'-id').val(value);
+					});
+				}).fail(function(err){
+					console.log("err getJSON config.json "+JSON.stringify(err));
+				});
+				$('#set-main-settings-id').on('submit', function(e){
+					e.preventDefault();
+					var myform = this;
+					$.ajax({
+						url: myform.action,
+			 			type: myform.method,
+			 			dataType: 'json',
+						data: $(myform).serialize(),
+						responseComplete: false,
+						beforeSend: function(){
+							$('#submit-button-id').prop('disabled', true);
+			 	 		},
+			 			success: function(data, textStatus, jqXHR) {
+			 				this.responseComplete = true;
+	 						this.itemResponse = data;
+			 			},
+			 			complete: function(jqXHR, textStatus){
+							$('#submit-button-id').prop('disabled', true);
+							console.log(this.itemResponse);
+			 				if (this.responseComplete==false)
+			 				{
+			 					alert('Critical Error');
+			 				}else
+			 				{
+			 					alert('Settings SAVED!');
+			 				}
+			 			}
+					});
+					return false;
+				});
+			});
+		</script>
+	</body>
+</html>

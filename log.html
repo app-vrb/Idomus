@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html charset="UTF-8">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+		<title>Device Log</title>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="/automation-app-0.0.1.min.css"> 
+	</head>
+	<body>
+		<div class="container">
+			<h3 class="text-center">Device Log</h3>
+			<div id="device-log-id"></div>
+		</div>
+		<script src="/jquery.min.js"></script>
+		<script>
+			function updateLog() {
+				$.ajax({
+					url: 'log',
+					type: 'POST',
+					dataType: 'html',
+					success: function(data, textStatus, jqXHR) {
+						$('#device-log-id').append(data);
+					},error:function(jqXHR,textStatus,error){
+						$('#device-log-id').append(error);
+					}
+				});
+			}
+			window.logTimer = setInterval(function(){
+				updateLog();
+			},4000);
+			updateLog();
+		</script>
+	</body>
+</html>

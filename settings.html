@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html charset="UTF-8">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+		<title>Main Settings</title>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="/automation-app-0.0.1.min.css">
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 col-lg-offset-1">
+					<h1>Main Settings</h1>
+					<form id="set-main-settings-id" name="set-main-settings" action="saveconfig" method="POST" autocomplete="off">
+						<div class="panel panel-default">
+							<div class="panel-body">
+								<div class="row">
+									<div class="col-sm-3 form-group">
+										<label for="device_model-id">Device Model</label>
+										<select name="device_model" id="device_model-id" class="form-control" required>
+											<option value="">- Select Device Model -</option>
+											<option value="mini">Mini</option>
+											<option value="mini_v1">Mini_V1</option>
+											<option value="mini_v2">Mini_V2 (POW)</option>
+											<option value="re4">RE4 (4 rele)</option>
+											<option value="base">Base</option>
+											<option value="base_0">Base_0</option>
+											<option value="quadra">Quadra</option>
+											<option value="quadraGA">Quadra Gas</option>
+											<option value="octa">Octa Display</option>
+											<option value="octa_v1">Octa Display_V1</option>
+											<option value="octa_v2">Octa Display_V2</option>
+											<option value="2din">2Din</option>
+											<option value="2dinpow">Pow</option>
+											<option value="2din_v1">2Din+POW CT</option>
+											<option value="ph">pH</option>
+											<option value="cloro">Cloro</option>
+											
+
+									
+										</select>
+									</div>
+								
+									<div class="col-sm-8 form-group">
+										<label for="device_type-id">SubDevices (XX|YY|ZZ)</label>
+										<input type="text" required class="form-control" name="device_type" id="device_type-id" value="">
+									</div>
+									<div class="col-sm-3 form-group">
+										<label for="debug_level-id">debug_level</label>
+										<select name="debug_level" id="debug_level-id" class="form-control" required>
+											<option value="">- Select Level -</option>
+											<option value="0">0 (Serial)</option>
+											<option value="1">1 (Serial)</option>
+											<option value="2">2 (Serial)</option>
+											<option value="3">3 (Serial)</option>
+											<option value="4">4 (Serial)</option>
+											
+											
+											
+										</select>
+									</div>
+									
+								</div>
+
+								<div class="row">
+									<div class="col-sm-8 form-group">
+										<label for="device_name-id">Device Name</label>
+										<input type="text" required class="form-control" name="device_name" id="device_name-id" value="">
+									</div>
+									<div class="col-sm-8 form-group">
+										<label for="user_name-id">User Name (email)</label>
+										<input type="text" required class="form-control" name="user_name" id="user_name-id" value="">
+									</div>
+									<div class="col-sm-8 form-group">
+										<label for="group_name-id">Group Name</label>
+										<input type="text" required class="form-control" name="group_name" id="group_name-id" value="">
+									</div>
+									<div class="col-sm-8 form-group">
+										<label for="room_name-id">Room Name</label>
+										<input type="text" required class="form-control" name="room_name" id="room_name-id" value="">
+									</div>
+
+									<div class="col-sm-8 form-group">
+										<label for="servername-id">Server Host</label>
+										<input type="text" required class="form-control" name="servername" id="servername-id" value="">
+									</div>
+									
+									<div class="col-sm-4 form-group">
+										<label for="port-id">Port</label>
+										<input type="number" required class="form-control" name="port" id="port-id" value=""
+										placeholder="1883">
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6 form-group">
+										<label for="usr-id">User</label>
+										<input type="text" class="form-control" name="usr" id="usr-id" value=""
+										placeholder="">
+									</div>
+									<div class="col-sm-6 form-group">
+										<label for="password-id">Password</label>
+										<input type="password" class="form-control" name="pwd" id="pwd-id" value="">
+									</div>
+								</div>
+								
+							</div>
+						</div>
+						<div class="text-center">
+							<button type="submit" id="submit-button-id" class="btn btn-success btn-lg">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="text-center">
+			<br>
+			<a href="/">Home</a>
+			<br>
+			
+		</div>
+		<script src="/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$.getJSON('/config.json', function(data){
+					$.each(data, function(key, value){
+						$('#'+key+'-id').val(value);
+					});
+				}).fail(function(err){
+					console.log("err getJSON config.json "+JSON.stringify(err));
+				});
+				$('#set-main-settings-id').on('submit', function(e){
+					e.preventDefault();
+					var myform = this;
+					$.ajax({
+						url: myform.action,
+			 			type: myform.method,
+			 			dataType: 'json',
+						data: $(myform).serialize(),
+						responseComplete: false,
+						beforeSend: function(){
+							$('#submit-button-id').prop('disabled', true);
+			 	 		},
+			 			success: function(data, textStatus, jqXHR) {
+			 				this.responseComplete = true;
+	 						this.itemResponse = data;
+			 			},
+			 			complete: function(jqXHR, textStatus){
+							$('#submit-button-id').prop('disabled', true);
+							console.log(this.itemResponse);
+			 				if (this.responseComplete==false)
+			 				{
+			 					alert('Critical Error');
+			 				}else
+			 				{
+			 					alert('Settings SAVED!');
+			 				}
+			 			}
+					});
+					return false;
+				});
+			});
+		</script>
+	</body>
+</html>
